@@ -1,0 +1,23 @@
+application:
+  max-file-size: ${SIZE:50000000}
+  file-extensions: ${EXTENSIONS:mp4,mov,wmv,avi,webm,mkv}
+
+server:
+  port: ${PORT:8080}
+  tomcat:
+    max-http-post-size: ${application.max-file-size}
+    max-swallow-size: ${application.max-file-size}
+
+spring:
+  application:
+    name: video
+  servlet:
+    multipart:
+      max-file-size: ${application.max-file-size}
+      max-request-size: ${application.max-file-size}
+
+aws:
+  endpoint: http://localhost:4566
+  region: us-east-1
+  s3:
+    bucket-name: nome-do-bucket-local
