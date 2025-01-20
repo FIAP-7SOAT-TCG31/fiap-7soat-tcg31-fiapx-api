@@ -21,7 +21,12 @@ aws:
   region: us-east-1
   access-key-id: ${AWS_ACCESS_KEY_ID:test}
   secret-access-key: ${AWS_SECRET_ACCESS_KEY:test}
-
   s3:
     bucket-name: fiap-7soat-tcg31-fiapx-bucket
     part-size: ${LIMITPARTSIZE:10485760}
+
+
+rabbitmq:
+  queue: process-video-queue
+  exchange: process-video-exchange
+  bindings: process-video-routing-queue

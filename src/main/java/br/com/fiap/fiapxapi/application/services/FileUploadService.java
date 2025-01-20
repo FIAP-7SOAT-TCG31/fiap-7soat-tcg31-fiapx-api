@@ -24,7 +24,7 @@ public class FileUploadService implements FileUploadUseCase {
     public void upload(Map<String, String> metadata, File file) {
 
         validation.handle(metadata, file);
-        this.fileUploadGateway.upload(metadata, file);
+        //this.fileUploadGateway.upload(metadata, file);
         this.notifyFileUploadedGateway.notify(file);
     }
 }

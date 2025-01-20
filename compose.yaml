@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  rabbitmq:
+    image: "rabbitmq:3.8.6-management"
+    container_name: fiap-7soat-tcg31-fiapx-api-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
     image: localstack/localstack
