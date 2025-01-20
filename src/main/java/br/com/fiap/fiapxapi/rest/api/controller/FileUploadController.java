@@ -4,6 +4,7 @@ import br.com.fiap.fiapxapi.domain.entities.File;
 import br.com.fiap.fiapxapi.domain.usecases.FileUploadUseCase;
 import br.com.fiap.fiapxapi.rest.api.constants.RestApiConstants;
 import br.com.fiap.fiapxapi.rest.api.dto.FileUploadResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping(RestApiConstants.FILE_BASE_PATH)
 public class FileUploadController {
@@ -29,9 +31,9 @@ public class FileUploadController {
             @RequestParam("file") MultipartFile file,
             @RequestParam Map<String, String> metadata) throws IOException {
 
+        log.info("received file to upload {}", file.getOriginalFilename());
         String fileName = file.getOriginalFilename();
-        fileUploadUseCase.upload(metadata, new File(fileName, fileName.substring(fileName.lastIndexOf('.') + 1), file.getBytes()));
-
+        fileUploadUseCase.upload(metadata, new File(fileName, fileName.substring(fileName.lastIndexOf('.') + 1), file.getContentType(), file.getBytes()));
         return ResponseEntity.ok(new FileUploadResponseDto(fileName, file.getSize()));
     }
 }

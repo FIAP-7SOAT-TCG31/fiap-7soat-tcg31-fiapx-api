@@ -1,5 +1,5 @@
 application:
-  max-file-size: ${SIZE:50000000}
+  max-file-size: ${LIMITSIZE:50000000}
   file-extensions: ${EXTENSIONS:mp4,mov,wmv,avi,webm,mkv}
 
 server:
@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: video
+    name: fiap-7soat-tcg31-fiapx-api
   servlet:
     multipart:
       max-file-size: ${application.max-file-size}
@@ -20,4 +20,5 @@ aws:
   endpoint: http://localhost:4566
   region: us-east-1
   s3:
-    bucket-name: nome-do-bucket-local
+    bucket-name: fiap-7soat-tcg31-fiapx-bucket
+    part-size: ${LIMITPARTSIZE:10485760}
