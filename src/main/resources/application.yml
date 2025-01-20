@@ -27,6 +27,6 @@ aws:
 
 
 rabbitmq:
-  queue: process-video-queue
-  exchange: process-video-exchange
-  bindings: process-video-routing-queue
+  queue: ${RABBITMQ-QUEUE:process-video-queue}
+  exchange: ${RABBITMQ-EXCHANGE:process-video-exchange}
+  bindings: ${RABBITMQ-ROUTING-QUEUE:process-video-routing-queue}
