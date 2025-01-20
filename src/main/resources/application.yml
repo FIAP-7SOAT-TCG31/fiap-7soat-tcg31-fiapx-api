@@ -19,8 +19,8 @@ spring:
 aws:
   endpoint: http://localhost:4566
   region: us-east-1
-  access-key-id: ${AWS_ACCESS_KEY_ID:test}
-  secret-access-key: ${AWS_SECRET_ACCESS_KEY:test}
+  key-id: ${AWS_ACCESS_KEY_ID:test}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:test}
   s3:
     bucket-name: fiap-7soat-tcg31-fiapx-bucket
     part-size: ${LIMITPARTSIZE:10485760}

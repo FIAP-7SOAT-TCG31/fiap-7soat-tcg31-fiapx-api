@@ -11,7 +11,7 @@ public class AwsProperties {
 
     private String region;
     private String endpoint;
-    private String accessKeyId;
-    private String secretAccessKey;
+    private String keyId;
+    private String secretKey;
 }
 
