@@ -49,6 +49,9 @@ public class FileUploadDataProvider implements FileUploadGateway {
                     .key(file.fileName())
                     .metadata(metadata)
                     .expires(Instant.now().plus(7, ChronoUnit.DAYS))
+                    .overrideConfiguration(builder ->
+                            builder.putHeader("If-None-Match", "*")
+                    )
                     .build();
 
             CreateMultipartUploadResponse createResponse = s3Client.createMultipartUpload(createRequest);

@@ -1,8 +1,6 @@
 package br.com.fiap.fiapxapi.storage.configuration;
 
 import br.com.fiap.fiapxapi.storage.properties.AwsProperties;
-import br.com.fiap.fiapxapi.storage.properties.StorageProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +17,18 @@ import java.net.URI;
 public class AwsS3Configuration {
 
     private final AwsProperties awsProperties;
+    private final AwsBasicCredentials awsBasicCredentials;
 
     public AwsS3Configuration(AwsProperties awsProperties) {
         this.awsProperties = awsProperties;
+        this.awsBasicCredentials = AwsBasicCredentials.create(awsProperties.getAccessKeyId(), awsProperties.getSecretAccessKey());
     }
 
     @Bean
     public S3Client beanS3Client() {
         var s3Builder = S3Client.builder()
                 .region(Region.of(awsProperties.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create("AKIAYXFVPHESGGXPSLMP", "pY1oU3Yri9ggYUT8iW2r7QIETIl5XTEOLf5uVNVz")
-                ));
+                .credentialsProvider(StaticCredentialsProvider.create(this.awsBasicCredentials));
 
         if (StringUtils.hasLength(awsProperties.getEndpoint())) {
             s3Builder.endpointOverride(URI.create(awsProperties.getEndpoint()));
