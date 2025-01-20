@@ -21,7 +21,7 @@ public class AwsS3Configuration {
 
     public AwsS3Configuration(AwsProperties awsProperties) {
         this.awsProperties = awsProperties;
-        this.awsBasicCredentials = AwsBasicCredentials.create(awsProperties.getAccessKeyId(), awsProperties.getSecretAccessKey());
+        this.awsBasicCredentials = AwsBasicCredentials.create(awsProperties.getKeyId(), awsProperties.getSecretKey());
     }
 
     @Bean
