@@ -26,6 +26,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(new FileUploadErrorResponseDto(
                         e.getLocalizedMessage(),
-                        e.getCause().getLocalizedMessage()));
+                        e.getCause() == null ? null : e.getCause().getLocalizedMessage()));
     }
 }
