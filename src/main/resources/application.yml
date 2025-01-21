@@ -1,5 +1,5 @@
 application:
-  max-file-size: ${LIMITSIZE:50000000}
+  max-file-size: ${LIMITSIZE:350000000}
   file-extensions: ${EXTENSIONS:mp4,mov,wmv,avi,webm,mkv}
 
 server:
