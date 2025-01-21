@@ -5,6 +5,7 @@ application:
 server:
   port: ${PORT:8080}
   tomcat:
+    connection-timeout: ${TIMEOUT:40000}
     max-http-post-size: ${application.max-file-size}
     max-swallow-size: ${application.max-file-size}
 

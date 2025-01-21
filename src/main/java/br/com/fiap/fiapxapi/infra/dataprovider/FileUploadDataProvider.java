@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Component
@@ -71,37 +72,8 @@ public class FileUploadDataProvider implements FileUploadGateway {
 
             List<CompletedPart> completedParts = new ArrayList<>();
 
-            for (int partNumber = 1; partNumber <= totalParts; partNumber++) {
-
-                log.info("starting upload part number {}", partNumber);
-                int start = (int) ((partNumber - 1) * storageProperties.getPartSize());
-                int end = Math.min(start + (int) storageProperties.getPartSize(), file.content().length);
-
-                byte[] partBytes = new byte[end - start];
-                System.arraycopy(file.content(), start, partBytes, 0, end - start);
-
-                UploadPartResponse uploadPartResponse = s3Client.uploadPart(
-                        UploadPartRequest.builder()
-                                .bucket(storageProperties.getBucketName())
-                                .key(file.fileName())
-                                .uploadId(uploadId)
-                                .partNumber(partNumber)
-                                .contentLength((long) partBytes.length)
-                                .contentMD5(toHex(partBytes, messageDigestMD5))
-                                .checksumAlgorithm(ChecksumAlgorithm.SHA256)
-                                .checksumSHA256(toHex(partBytes, messageDigestSHA256))
-                                .build(),
-                        RequestBody.fromBytes(partBytes)
-                );
-
-                completedParts.add(CompletedPart.builder()
-                        .partNumber(partNumber)
-                        .eTag(uploadPartResponse.eTag())
-                        .checksumSHA256(uploadPartResponse.checksumSHA256())
-                        .build());
-
-                log.info("finished upload part number {}", partNumber);
-            }
+            IntStream.rangeClosed(1, totalParts)
+                    .forEach(partNumber -> uploadMultipartFile(file, partNumber, uploadId, completedParts));
 
             CompleteMultipartUploadResponse completeMultipartUploadResponse = s3Client.completeMultipartUpload(
                     CompleteMultipartUploadRequest
@@ -124,6 +96,37 @@ public class FileUploadDataProvider implements FileUploadGateway {
             throw new FileNotUploadedException("error on file upload process");
         }
 
+    }
+
+    private void uploadMultipartFile(File file, int partNumber, String uploadId, List<CompletedPart> completedParts) {
+        log.info("starting upload part number {}", partNumber);
+        int start = (int) ((partNumber - 1) * storageProperties.getPartSize());
+        int end = Math.min(start + (int) storageProperties.getPartSize(), file.content().length);
+
+        byte[] partBytes = new byte[end - start];
+        System.arraycopy(file.content(), start, partBytes, 0, end - start);
+
+        UploadPartResponse uploadPartResponse = s3Client.uploadPart(
+                UploadPartRequest.builder()
+                        .bucket(storageProperties.getBucketName())
+                        .key(file.fileName())
+                        .uploadId(uploadId)
+                        .partNumber(partNumber)
+                        .contentLength((long) partBytes.length)
+                        .contentMD5(toHex(partBytes, messageDigestMD5))
+                        .checksumAlgorithm(ChecksumAlgorithm.SHA256)
+                        .checksumSHA256(toHex(partBytes, messageDigestSHA256))
+                        .build(),
+                RequestBody.fromBytes(partBytes)
+        );
+
+        completedParts.add(CompletedPart.builder()
+                .partNumber(partNumber)
+                .eTag(uploadPartResponse.eTag())
+                .checksumSHA256(uploadPartResponse.checksumSHA256())
+                .build());
+
+        log.info("finished upload part number {}", partNumber);
     }
 
     public String toHex(byte[] bytes, MessageDigest messageDigest) {
